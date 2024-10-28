@@ -1,6 +1,20 @@
-- hosts: localhost
-  become: true
-
+---
+- name: Setup Zsh and SSH
+  hosts: all
+  become: yes
   tasks:
-    - name: Install zsh
-      apt: name=zsh
+    - name: Determine the Linux distribution
+      setup:
+
+    - name: Install Zsh for Debian-based systems
+      apt:
+        name: zsh
+        state: present
+      when: ansible_os_family == "Debian"
+      tags: debian
+
+    - name: Change default shell to Zsh
+      user:
+        name: "{{ ansible_user }}"
+        shell: /usr/bin/zsh
+      tags: change_shell
